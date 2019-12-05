@@ -3,14 +3,36 @@
            https://api.github.com/users/<your name>
 */
 
-axios.get('https://api.github.com/users/hiterharris')
-  .then( response => {
-    console.log(response);
+axios.get('https://api.github.com/users/hiterharris/followers')
+
+.then(response => {
+  const users = response.data.map(user => user);
+  return users;
+})
+.then(result => {
+  result.forEach(api => {
+    axios.get(api.url)
+    .then( response => {
+      const followerCount = api.followers_url.length;
+      const followingCount = api.following_url.length;
+      // console.log(followerCount);
+      const newCard = Cards(response, followerCount, followingCount);
+      entryPoint.appendChild(newCard);
+    })
   })
+})
+  // .then( response => {
+  //   console.log(response);
+  //   response.data.forEach( item => {
+  //     const newFollower = Cards(item);
+  //     entryPoint.appendChild(newFollower);
+  //   })
+  // })
   .catch( error => {
     console.log('Data not returned', error);
   });
 
+  const entryPoint = document.querySelector('.cards')
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -22,7 +44,7 @@ axios.get('https://api.github.com/users/hiterharris')
            create a new component and add it to the DOM as a child of .cards
 */
 
-function Cards() {
+function Cards(response, followerCount, followingCount) {
 
   // CREATING ELEMENTS
   const card = document.createElement('div');
@@ -32,7 +54,7 @@ function Cards() {
   const userName = document.createElement('p');
   const location = document.createElement('p');
   const profile = document.createElement('p');
-  const githubUrl = document.createElement('a');
+  const gitHub = document.createElement('a');
   const followers = document.createElement('p');
   const following = document.createElement('p');
   const bio = document.createElement('p');
@@ -43,7 +65,28 @@ function Cards() {
   name.classList.add('name');
   userName.classList.add('username');
 
-  name.textContent = 'Name';
+  // PASSING DATA INTO FUNCTION
+  const data = response.data;
+  userImg.src = data.avatar_url;
+  name.textContent = data.login;
+  userName.textContent = data.login;
+  location.textContent = 'Location: ';
+  profile.textContent = 'Profile: ';
+  gitHub.href = `Profile: ${data.html_url}`;
+  gitHub.textContent = `${data.html_url}`;
+
+
+  // ** TODO: get accurate data **
+  // followers.textContent = 'Followers:';
+  followers.textContent = `Followers: ${followerCount}`;
+  following.textContent = `Following: ${followingCount}`;
+
+
+  // following.textContent = 'Following:';
+  // following.textContent = `Following: ${followingCount}`;
+  bio.textContent = 'Bio: ' ;
+  // **
+
 
   const cards = document.querySelector('.cards');
   cards.appendChild(card);
@@ -53,7 +96,7 @@ function Cards() {
   cardInfo.appendChild(userName);
   cardInfo.appendChild(location);
   cardInfo.appendChild(profile);
-  profile.appendChild(githubUrl);
+  profile.appendChild(gitHub);
   cardInfo.appendChild(followers);
   cardInfo.appendChild(following);
   cardInfo.appendChild(bio);
@@ -73,13 +116,7 @@ Cards();
           user, and adding that card to the DOM.
 */
 
-const followersArray = [
-  'TimJohnson',
-  'Mnunley1',
-  'brandonharris177',
-  'SandraCoburn',
-  'IsabellaGuo',
-];
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -99,12 +136,4 @@ const followersArray = [
   </div>
 </div>
 
-*/
-
-/* List of LS Instructors Github username's: 
-  tetondan
-  dustinmyers
-  justsml
-  luishrd
-  bigknell
 */
