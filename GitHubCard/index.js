@@ -18,51 +18,54 @@ axios.get('https://api.github.com/users/hiterharris/followers')
 });
 
 function Cards(response) {
-  console.log(response.data.followers);
-
-  // CREATING ELEMENTS
-  const card = document.createElement('div');
-  const userImg = document.createElement('img');
-  const cardInfo = document.createElement('div');
-  const name = document.createElement('h3');
-  const userName = document.createElement('p');
-  const location = document.createElement('p');
-  const profile = document.createElement('p');
-  const gitHub = document.createElement('a');
-  const followers = document.createElement('p');
-  const following = document.createElement('p');
-  const bio = document.createElement('p');
-
-  // CREATING CLASS NAMES
-  card.classList.add('card');
-  cardInfo.classList.add('card-info');
-  name.classList.add('name');
-  userName.classList.add('username');
-
-  // PASSING DATA INTO FUNCTION
   const data = response.data;
+  const cards = document.querySelector('.cards');
+
+  const card = document.createElement('div');
+  card.classList.add('card');
+  cards.appendChild(card);
+
+  const userImg = document.createElement('img');
   userImg.src = data.avatar_url;
+  card.appendChild(userImg);
+
+  const cardInfo = document.createElement('div');
+  cardInfo.classList.add('card-info');
+  card.appendChild(cardInfo);
+
+  const name = document.createElement('h3');
+  name.classList.add('name');
   name.textContent = data.login;
+  cardInfo.appendChild(name);
+
+  const userName = document.createElement('p');
+  userName.classList.add('username');
   userName.textContent = data.login;
+  cardInfo.appendChild(userName);
+
+  const location = document.createElement('p');
   location.textContent = 'Location: ';
+  cardInfo.appendChild(location);
+
+  const profile = document.createElement('p');
   profile.textContent = 'Profile: ';
+  cardInfo.appendChild(profile);
+
+  const gitHub = document.createElement('a');
   gitHub.href = data.html_url;
   gitHub.textContent = `${data.html_url}`;
-  followers.textContent = `Followers: ${data.followers}`;
-  following.textContent = `Following: ${data.following}`;
-  bio.textContent = `Bio: ${data.bio}` ;
-
-  const cards = document.querySelector('.cards');
-  cards.appendChild(card);
-  card.appendChild(userImg);
-  card.appendChild(cardInfo);
-  cardInfo.appendChild(name);
-  cardInfo.appendChild(userName);
-  cardInfo.appendChild(location);
-  cardInfo.appendChild(profile);
   profile.appendChild(gitHub);
+
+  const followers = document.createElement('p');
+  followers.textContent = `Followers: ${data.followers}`;
   cardInfo.appendChild(followers);
+
+  const following = document.createElement('p');
+  following.textContent = `Following: ${data.following}`;
   cardInfo.appendChild(following);
+
+  const bio = document.createElement('p');
+  bio.textContent = `Bio: ${data.bio}` ;
   cardInfo.appendChild(bio);
 
   return card;
