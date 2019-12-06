@@ -1,29 +1,24 @@
+const entryPoint = document.querySelector('.cards')
 axios.get('https://api.github.com/users/hiterharris/followers')
-
 .then(response => {
   const users = response.data.map(user => user);
   return users;
 })
-
 .then(result => {
   result.forEach(api => {
     axios.get(api.url)
     .then( response => {
-      const followerCount = api.followers_url.length;
-      const followingCount = api.following_url.length;
-      const newCard = Cards(response, followerCount, followingCount);
+      const newCard = Cards(response);
       entryPoint.appendChild(newCard);
     })
   })
 })
-
 .catch( error => {
   console.log('Data not returned', error);
 });
 
-const entryPoint = document.querySelector('.cards')
-
-function Cards(response, followerCount, followingCount) {
+function Cards(response) {
+  console.log(response.data.followers);
 
   // CREATING ELEMENTS
   const card = document.createElement('div');
@@ -51,12 +46,11 @@ function Cards(response, followerCount, followingCount) {
   userName.textContent = data.login;
   location.textContent = 'Location: ';
   profile.textContent = 'Profile: ';
-  gitHub.href = `Profile: ${data.html_url}`;
+  gitHub.href = data.html_url;
   gitHub.textContent = `${data.html_url}`;
-  followers.textContent = `Followers: ${followerCount}`;
-  following.textContent = `Following: ${followingCount}`;
-  bio.textContent = 'Bio: ' ;
-
+  followers.textContent = `Followers: ${data.followers}`;
+  following.textContent = `Following: ${data.following}`;
+  bio.textContent = `Bio: ${data.bio}` ;
 
   const cards = document.querySelector('.cards');
   cards.appendChild(card);
